@@ -1,0 +1,168 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <head>
+  <script src="http://momentjs.com/downloads/moment.js"></script>
+<script src="https://cdn.netpie.io/microgear.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+</head>
+  <body>
+
+
+    <div class="container">
+        <div class="row">
+        <div class="page-header">
+        <h1>Feeding Dog System</h1>
+      </div></div>
+      <div class="row">
+            <div class="col-md-4">
+              <h1>
+      <span class="label label-warning">Message send:</span>
+      <div class="alert alert-warning" id="dataOUT" role="alert">
+        <strong>No send message NOW!!</strong> 
+      </div>
+      <span class="label label-success" id="recive">Message recive:</span>
+      <div class="alert alert-success" id="dataIN" role="alert">
+        <strong>No messsage!! </strong> Please check you sure connect <u>internet or 3G/4G</u> 
+      </div></h1>
+            </div>
+            <div class="col-md-4">
+                <center>
+                <button type="button" onclick="OPEN()"  class="btn btn-lg btn-success" style="height:100px;width:200px">OPEN</button><br><br>
+                <button type="button" onclick="open_3()"  class="btn btn-lg btn-default" style="height:100px;width:200px">OPEN 3</button><br><br>
+                <button type="button" onclick="open_2()"  class="btn btn-lg btn-default" style="height:100px;width:200px">OPEN 2</button><br><br>
+                <button type="button" onclick="open_1()"  class="btn btn-lg btn-default" style="height:100px;width:200px">OPEN 1</button><br><br>
+                <button type="button" onclick="CLOSE()" class="btn btn-lg btn-danger" style="height:100px;width:200px">CLOSE</button><br><br>
+            </center>
+
+            </div>
+            <div class="col-md-4">
+                <span class="label label-success" id="LIMITS">Limit: Once a day!!!</span>
+                <div class="alert alert-success" id="LIMIT" role="alert">
+                  <strong>Now you can feed food to your dog </strong> 
+                </div>
+                 <button type="button" onclick="RESET()"  class="btn btn-lg btn-success" style="height:100px;width:200px">RESET</button><br><br>
+            </div>
+      </div>
+
+    </div>
+
+      </body>
+</html>
+
+<script>
+  const APPID     = "FeedingDogSystem";
+  const APPKEY    = "TyEMHJ3sHqxn4jN";
+  const APPSECRET = "Yv3PWnrufsgDYzd8smofiEDVn";
+
+    var microgear = Microgear.create({
+        gearkey: APPKEY,
+        gearsecret: APPSECRET
+    });
+   
+
+    function OPEN(){
+    
+     
+      microgear.chat("Nodemcu","OPEN");
+      document.getElementById("dataOUT").innerHTML = "OPEN";
+    
+    }
+    function open_1(){
+       microgear.chat("Nodemcu","OPEN_1");
+       document.getElementById("dataOUT").innerHTML = "OPEN level 1";
+    }
+    function open_2(){
+       microgear.chat("Nodemcu","OPEN_2");
+      document.getElementById("dataOUT").innerHTML = "OPEN level 2";
+    }
+    function open_3(){
+       microgear.chat("Nodemcu","OPEN_3");
+      document.getElementById("dataOUT").innerHTML = "OPEN level 3";
+    }
+    function CLOSE(){
+       
+       microgear.chat("Nodemcu","CLOSE");
+       document.getElementById("LIMITS").innerHTML = "CAN'T FEED";
+        document.getElementById("LIMIT").innerHTML = "Please press RESET button to reset your system";
+       document.getElementById("dataOUT").innerHTML = "CLOSE";
+       document.getElementById("LIMIT").className = "alert alert-danger";
+        document.getElementById("LIMITS").className = "label label-danger";
+        document.getElementById("recive").className = "label label-danger";
+        document.getElementById("dataIN").className = "alert alert-danger";
+       
+       
+    }
+    function RESET(){
+       
+       microgear.chat("Nodemcu","RESET");
+       document.getElementById("LIMIT").innerHTML = "Now you can feed food to your dog";
+       document.getElementById("LIMITS").innerHTML = "Limit: Once a day!!!";
+        document.getElementById("LIMIT").className = "alert alert-success";
+        document.getElementById("LIMITS").className = "label label-success";
+        document.getElementById("recive").className = "label label-success";
+        document.getElementById("dataIN").className = "alert alert-success";
+       
+    }
+    
+
+    
+    microgear.on('message', function(topic,data) {
+     
+    
+     
+      if(data=="Sorry you can't feed food to your dog because you used qouta today!!  "){
+        document.getElementById("dataIN").innerHTML = data;
+        document.getElementById("LIMITS").innerHTML = "CAN'T FEED";
+        document.getElementById("LIMIT").innerHTML = "Please press RESET button to reset your system";
+        document.getElementById("LIMIT").className = "alert alert-danger";
+        document.getElementById("LIMITS").className = "label label-danger";
+        document.getElementById("recive").className = "label label-danger";
+        document.getElementById("dataIN").className = "alert alert-danger";
+      }else{
+      document.getElementById("dataIN").innerHTML = data;}
+    });
+
+    microgear.on('connected', function() {
+       microgear.setname('web');
+    
+      document.getElementById("dataIN").innerHTML = "Now I am connected with netpie...";
+        
+    });
+    microgear.on("present", function(event) {
+    
+});
+    microgear.resettoken();
+    microgear.connect(APPID);
+    setInterval(function(){ 
+            var date = new Date(moment().format('YYYY-MM-DD HH:mm:ss'));
+          if(date.getHours()=="0" && date.getMinutes()=="0"&& date.getSeconds()=="0"){
+            console.log(date)
+            microgear.chat("Nodemcu","RESET");
+       document.getElementById("LIMIT").innerHTML = "Now you can feed food to your dog";
+       document.getElementById("LIMITS").innerHTML = "Limit: Once a day!!!";
+        document.getElementById("LIMIT").className = "alert alert-success";
+        document.getElementById("LIMITS").className = "label label-success";
+        document.getElementById("recive").className = "label label-success";
+        document.getElementById("dataIN").className = "alert alert-success";
+      }
+     }, 500);
+
+    
+</script>
